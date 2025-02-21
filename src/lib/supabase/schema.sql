@@ -4,6 +4,7 @@ DROP POLICY IF EXISTS "Users can update their own profile" ON profiles;
 DROP POLICY IF EXISTS "Annotations are viewable by admin users" ON annotations;
 DROP POLICY IF EXISTS "Annotators can insert their own annotations" ON annotations;
 DROP POLICY IF EXISTS "Annotators can update their own annotations" ON annotations;
+DROP POLICY IF EXISTS "Annotators can view their own annotations" ON annotations;
 
 -- Drop and recreate the annotations table
 DROP TABLE IF EXISTS annotations;
@@ -18,7 +19,7 @@ CREATE TABLE IF NOT EXISTS profiles (
 );
 
 -- Create annotations table with proper foreign key
-CREATE TABLE annotations (
+CREATE TABLE IF NOT EXISTS annotations (
   id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
   annotator_id uuid REFERENCES profiles(id) ON DELETE CASCADE NOT NULL,
   sentence text NOT NULL,
@@ -57,9 +58,20 @@ CREATE POLICY "Annotations are viewable by admin users"
     )
   );
 
+CREATE POLICY "Annotators can view their own annotations"
+  ON annotations FOR SELECT
+  USING (annotator_id = auth.uid());
+
 CREATE POLICY "Annotators can insert their own annotations"
   ON annotations FOR INSERT
-  WITH CHECK (annotator_id = auth.uid());
+  WITH CHECK (
+    auth.uid() = annotator_id AND
+    EXISTS (
+      SELECT 1 FROM profiles
+      WHERE profiles.id = auth.uid()
+      AND (profiles.role = 'annotator' OR profiles.role = 'admin')
+    )
+  );
 
 CREATE POLICY "Annotators can update their own annotations"
   ON annotations FOR UPDATE

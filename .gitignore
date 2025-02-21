@@ -34,7 +34,33 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# Large data files
+# Large data file only
+/public/efcamdat_clean.csv
+efcamdat_clean.csv
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+ENV/
+
+# Streamlit
+.streamlit/secrets.toml
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Project specific
 /public/efcamdat_clean.csv
 /public/sampled_data.csv
-efcamdat_clean.csv
+.env*
