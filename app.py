@@ -22,12 +22,12 @@ TENSE_CATEGORIES = {
         "Present Simple",
         "Past Simple",
         "Future Simple (will)",
-        "Future Simple (going to)",
+        "Future Simple (going to)"
     ],
     "Continuous Forms": [
         "Present Continuous",
         "Past Continuous",
-        "Future Continuous",
+        "Future Continuous"
     ],
     "Perfect Forms": [
         "Present Perfect",
@@ -35,18 +35,19 @@ TENSE_CATEGORIES = {
         "Future Perfect",
         "Present Perfect Continuous",
         "Past Perfect Continuous",
-        "Future Perfect Continuous",
+        "Future Perfect Continuous"
     ],
     "Modal Forms": [
         "Modal Present (would/could/might/should)",
-        "Modal Past (would have/could have)",
+        "Modal Past (would have/could have)"
     ],
     "Other Structures": [
         "Conditional (if clause)",
         "To-infinitive",
         "Bare infinitive",
         "Gerund (-ing form)",
-        "Multiple Verbs"
+        "Multiple Verbs",
+        "None of above"
     ]
 }
 
@@ -471,17 +472,17 @@ def main():
                 # Group tenses by category in the selectbox
                 tense_options = [""]
                 for category, tenses in TENSE_CATEGORIES.items():
-                    tense_options.append(f"------ {category} ------")
+                    tense_options.append(f"[{category}]")
                     tense_options.extend(tenses)
                 
                 selected_tense = st.selectbox(
                     "Select Tense",
                     tense_options,
-                    format_func=lambda x: "" if x.startswith("------") else x
+                    format_func=lambda x: "" if x.startswith("[") and x.endswith("]") else x
                 )
                 
                 # Skip category headers when processing selection
-                if selected_tense and selected_tense.startswith("------"):
+                if selected_tense and selected_tense.startswith("[") and selected_tense.endswith("]"):
                     selected_tense = ""
 
                 # Add a warning if no tense is selected
@@ -516,7 +517,7 @@ def main():
                     next_button = st.form_submit_button("➡️ Next")
                 
                 if save_button or next_button or prev_button:
-                    if selected_tense and not selected_tense.startswith("------"):  # Only save if a valid tense is selected
+                    if selected_tense and not selected_tense.startswith("[") and not selected_tense.endswith("]"):  # Only save if a valid tense is selected
                         if save_annotation(
                             current_item['sentence'],
                             current_item['sentence_index'],
