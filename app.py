@@ -72,7 +72,7 @@ def split_into_sentences(text):
 def load_data():
     """Load and process the CSV data."""
     try:
-        df = pd.read_csv('public/sampled_data.csv')
+        df = pd.read_csv('public/Randomly_Sampled_CEFR_Data.csv')
         return df
     except Exception as e:
         st.error(f"Error loading data: {str(e)}")
